@@ -20,6 +20,7 @@ class UserLoginView(LoginView):
     template_name = 'user_login.html'
     authentication_form = UserLoginForm
 
+
 # logout用
 class UserLogoutView(LogoutView):
     pass
