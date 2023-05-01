@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* JavaScriptにTailwindCSSの当て方がわからないのでこっちに普通のcssで記載。 */
+/* チャットコンテナ全体（白い部分） */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: scroll;
+  max-height: calc(7 * (60px + 0.8rem * 2));
+  width: calc(100% - 80px);
+  padding: 0 80px;
+  background-color: #ffffff;
+  margin: 0 auto;
+}
+
+/* チャットの吹き出し部分 */
+.chat-bubble {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #adc7c2;
+  border-radius: 1rem;
+  padding: 0.8rem 1rem;
+  margin: 0.8rem 0;
+  max-width: 90%;
+}
+
+/* チャットの切り取ってる部分 */
+.chat-bubble:before {
+  content: "";
+  position: absolute;
+  right: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 8px solid transparent;
+  border-left-color: #adc7c2;
+  z-index: 1;
+}
+
+/* チャットのアイコン部分 */
+.chat-image {
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  z-index: 2;
+}

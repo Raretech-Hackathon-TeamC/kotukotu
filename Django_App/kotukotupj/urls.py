@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from kotukotu.views import test_tailwind
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # ほそまつ確認のために、test_tailwindビューに/test-tailwind/ URLを割り当てました。
+    path('test-tailwind/', test_tailwind, name='test_tailwind'),  
 ]
