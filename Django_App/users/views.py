@@ -10,7 +10,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'home.html'
 
-
+# TODO:user登録後の画面遷移がhomeにならない問題（未解決）
 # ユーザー登録用
 class RegistUserView(CreateView):
     template_name = 'regist.html'
