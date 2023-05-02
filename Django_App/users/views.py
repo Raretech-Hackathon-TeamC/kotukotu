@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView
-from .forms import RegistForm, UserLoginForm
+from users.forms import RegistForm, UserLoginForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
+from django.core.exceptions import ValidationError
 
 # Home画面
 class HomeView(LoginRequiredMixin, TemplateView):
@@ -17,7 +18,7 @@ class RegistUserView(CreateView):
 
 # login用
 class UserLoginView(LoginView):
-    template_name = 'user_login.html'
+    template_name = 'login.html'
     authentication_form = UserLoginForm
 
 

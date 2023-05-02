@@ -38,10 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'kotukotu.apps.KotukotuConfig',
+    'users.apps.UsersConfig',
 ]
 
-AUTH_USER_MODEL = 'kotukotu.Users'
+# カスタムユーザーモデルを指定
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -94,18 +95,37 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+]
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        # パスワードの最低文字数を8文字に指定
+        'OPTIONS' : {
+            'min_length': 8,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+    {
+        # 自作バリデーションkotukotupjのvalidation.pyに処理を記述
+        'NAME': 'utils.validations.CustomPasswordValidator' 
     },
 ]
 
@@ -140,6 +160,7 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = '/user_login'
-LOGIN_REDIRECT_URL = '/home'
-LOGOUT_REDIRECT_URL = '/user_login'
+# LoginView,LogoutViewを使用したときの遷移先指定
+LOGIN_URL = '/users/login'
+LOGIN_REDIRECT_URL = '/users/home'
+LOGOUT_REDIRECT_URL = '/users/login'

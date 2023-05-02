@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class KotukotuConfig(AppConfig):
+class UsersConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'kotukotu'
+    name = 'users'
