@@ -4,8 +4,8 @@ from django.views.generic.base import TemplateView
 from users.forms import RegistForm, UserLoginForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.core.exceptions import ValidationError
 
+# TODO:homeはactivityアプリを作成した後に削除
 # Home画面
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'home.html'
