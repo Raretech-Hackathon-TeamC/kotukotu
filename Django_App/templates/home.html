@@ -2,4 +2,8 @@
 {% block content %}
   <h1>ホーム画面です</h1>
   <a href="{% url 'users:logout' %}">ログアウト</a>
+
+  <a href="{% url 'activity:activity_list' %}">レコード画面へ</a>
+  <a href="{% url 'activity:activity_add' %}">積み上げを記録する</a>
+
 {% endblock content %}

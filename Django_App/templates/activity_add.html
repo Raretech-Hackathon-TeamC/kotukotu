@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>積み上げ追加</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">保存</button>
+    <a href="{% url 'activity:activity_list' %}">キャンセル</a>
+    <a href="{% url 'activity:home' %}">ホーム画面</a>
+  </form>
+{% endblock content %}

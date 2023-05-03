@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
+    'activity.apps.ActivityConfig',
 ]
 
 # カスタムユーザーモデルを指定
@@ -115,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         # 自作バリデーションkotukotupjのvalidation.pyに処理を記述
-        'NAME': 'utils.validations.CustomPasswordValidator' 
+        'NAME': 'utils.validations.CustomPasswordValidator'
     },
 ]
 
