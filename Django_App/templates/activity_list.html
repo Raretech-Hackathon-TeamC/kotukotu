@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load time_filters %} {# ここでtime_filtersをロードします #}
+
+{% block content %}
+  <header>
+    <h1>積み上げ一覧</h1>
+    <p><a href="{% url 'activity:home' %}">ホーム画面</a></p>
+    <p><a href="{% url 'activity:activity_add' %}">積み上げ追加</a></p>
+  </header>
+  <table>
+    <thead>
+      <tr>
+        <th>日付</th>
+        <th>活動時間</th>
+        <th>メモ</th>
+        <th>編集</th>
+        <th>削除</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for activity in object_list %}
+      <tr>
+        <td>{{ activity.date }}</td>
+        <td>{{ activity.duration|format_duration }}</td> {# ここでformat_durationフィルタを適用します #}
+        <td>{{ activity.memo }}</td>
+        <td><a href="{% url 'activity:activity_edit' activity.id %}">編集</a></td>
+        <td><a href="{% url 'activity:activity_delete' activity.id %}">削除</a></td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5">まだ積み上げがありません。</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock content%}
