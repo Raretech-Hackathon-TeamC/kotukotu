@@ -25,7 +25,7 @@
         <td>{{ activity.duration|format_duration }}</td> {# ここでformat_durationフィルタを適用します #}
         <td>{{ activity.memo }}</td>
         <td><a href="{% url 'activity:activity_edit' activity.id %}">編集</a></td>
-        <td><a href="{% url 'activity:activity_delete' activity.id %}">削除</a></td>
+        <td><a href="{% url 'activity:activity_delete' activity.id %}" class="deleteButton">削除</a></td>
       </tr>
       {% empty %}
       <tr>
@@ -34,4 +34,36 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <!-- Modal -->
+  <div id="deleteModal" style="display: none;">
+    <h5>積み上げ削除</h5>
+    <p>本当に削除しますか？</p>
+    <button id="cancelButton">キャンセル</button>
+    <form method="post" id="deleteForm" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" id="deleteBtn">削除</button>
+    </form>
+  </div>
+
+
+  <script>
+  var deleteButtons = document.querySelectorAll('.deleteButton');  // 削除ボタンの取得
+  var deleteModal = document.getElementById('deleteModal');  // モーダルウィンドウの取得
+  var deleteForm = document.getElementById('deleteForm');  // モーダル内の削除ボタンの取得
+  var cancelButton = document.getElementById('cancelButton');  // モーダル内のキャンセルボタンの取得
+
+  deleteButtons.forEach(function(button) {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();  // ボタンのデフォルトの動作をキャンセル
+      deleteForm.action = button.href;  // モーダル内のフォームに削除のURLを設定
+      deleteModal.style.display = 'block';  // モーダルウィンドウの表示
+    });
+  });
+
+  cancelButton.addEventListener('click', function() {
+    deleteModal.style.display = 'none';  // モーダルウィンドウの非表示
+  });
+  </script>
+
 {% endblock content%}

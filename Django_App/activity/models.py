@@ -9,7 +9,6 @@ class ActivityRecord(models.Model):
     - user_id (FK - users): usersテーブルを参照（外部キー）
     - date: 記録された日付 (例: '2023-04-04')
     - duration: 活動時間（分） (例: 360)
-        * ロジック側で分単位にする必要あり
     - memo: メモ (例: '今日は集中して勉強できた')
     - created_at: レコード作成日時 (例: '2023-04-04 10:30:00')
     - updated_at: レコード更新日時 (例: '2023-04-04 10:30:00')

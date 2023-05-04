@@ -31,22 +31,22 @@ class ActivityListView(LoginRequiredMixin, generic.ListView):
 
 
 # 積み上げ編集画面
-# Todo: 未完了
 class ActivityEditView(LoginRequiredMixin, generic.UpdateView):
     model = ActivityRecord
     form_class = ActivityRecordForm
     template_name = 'activity_edit.html'
-    success_url = reverse_lazy('activity_list')
+    success_url = reverse_lazy('activity:activity_list')
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
 
 # 積み上げ削除画面
-# Todo: 未完了
 class ActivityDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = ActivityRecord
-    template_name = 'activity_delete.html'
-    success_url = reverse_lazy('activity_list')
+    success_url = reverse_lazy('activity:activity_list')
+
+    def post(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)

@@ -1,5 +1,6 @@
 from django import forms
 from .models import ActivityRecord
+from datetime import date
 
 # ActivityRecord登録・編集用フォーム
 class ActivityRecordForm(forms.ModelForm):
@@ -11,7 +12,14 @@ class ActivityRecordForm(forms.ModelForm):
         model = ActivityRecord
         fields = ['date', 'hours', 'minutes', 'memo']
 
-    # hours, minutsを分単位に変換
+    # hours, minutesに初期値を設定
+    def __init__(self, *args, **kwargs):
+        super(ActivityRecordForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.initial['hours'], self.initial['minutes'] = divmod(self.instance.duration, 60)
+            self.initial['date'] = self.instance.date.strftime('%Y-%m-%d')
+
+    # hours, minutesを分単位に変換
     def clean(self):
         cleaned_data = super().clean()
         hours = cleaned_data.get('hours')

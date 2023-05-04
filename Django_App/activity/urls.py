@@ -11,4 +11,4 @@ urlpatterns = [
     path('<int:pk>/delete/', views.ActivityDeleteView.as_view(), name='activity_delete'),
 ]
 
-# TODO:ホーム(home)画面, 編集(edit)画面, 削除(delete)モーダルの作成
+# TODO:ホーム(home)画面の作成
