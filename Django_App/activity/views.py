@@ -4,11 +4,32 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import ActivityRecord
 from .forms import ActivityRecordForm
+from . import models
+from . import graph
+import matplotlib.dates as mdates
 
 # ホーム画面(仮)
 # Todo: 未完了
 class HomeView(LoginRequiredMixin, generic.TemplateView):
+    #テンプレートファイル連携
     template_name = 'home.html'
+    
+    #変数としてグラフイメージをテンプレートに渡す
+    def get_context_data(self, **kwargs):
+        #グラフオブジェクト
+        qs    = models.ActivityRecord.objects.all()  #モデルクラス(ActivityRecordテーブル)読込
+        x     = [x.date for x in qs]                 #X軸データ
+        y     = [y.duration for y in qs]             #Y軸データ
+        chart = graph.Plot_Graph(x,y)                #グラフ作成
+        #変数を渡す
+        context = super().get_context_data(**kwargs)
+        context['chart'] = chart
+        return context
+
+    #get処理
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+    
 
 # 積み上げ追加画面
 class ActivityAddView(LoginRequiredMixin, generic.CreateView):

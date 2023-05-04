@@ -6,4 +6,7 @@
   <a href="{% url 'activity:activity_list' %}">レコード画面へ</a>
   <a href="{% url 'activity:activity_add' %}">積み上げを記録する</a>
 
+  <h1>日々の積み上げ記録</h1>
+	<img src="data:image/png;base64,{{ chart | safe }}">
+
 {% endblock content %}
