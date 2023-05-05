@@ -2,11 +2,99 @@
 
 {% block content %}
   <h1>積み上げ追加</h1>
-  <form method="post">
+  <form id="activityRecordForm" method="post" class="activityRecordForm" onsubmit="event.preventDefault(); submitForm();">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">保存</button>
     <a href="{% url 'activity:activity_list' %}">キャンセル</a>
     <a href="{% url 'activity:home' %}">ホーム画面</a>
   </form>
+
+  {# Modal #}
+  <div id="successModal" style="display: none;">
+    <h5>Good job!</h5>
+    <p id="totalDays">活動累計日数: 0</p>
+    <button id="homeButton">ホームへ</button>
+    <button id="recordButton">レコードへ</button>
+  </div>
+
+  {# Error messages #}
+  <div id="errorMessages" style="display: none;">
+    <ul id="errorMessageList">
+    </ul>
+  </div>
+
+<script>
+  // フォームを送信する非同期関数
+  async function submitForm() {
+    // フォームデータを取得
+    const formData = new FormData(document.querySelector('.activityRecordForm'));
+    // フォームデータを送信
+    const response = await fetch('{% url "activity:activity_ajax_submit" %}', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+      },
+    });
+
+    // Jsonデータを取得
+    const data = await response.json();
+
+    // 送信が成功した場合
+    if (data.success) {
+      // 累計日数を取得
+      const totalDaysResponse = await fetch('{% url "activity:get_total_days" %}');
+      const totalDaysData = await totalDaysResponse.json();
+
+      // 累計日数取得に成功した場合
+      if (totalDaysResponse.ok) {
+        // 累計日数を表示
+        document.getElementById('totalDays').textContent = '活動累計日数: ' + totalDaysData.total_days;
+
+        // 成功モーダルウィンドウの表示
+        document.getElementById('successModal').style.display = 'block';
+      } else {
+        // エラーメッセージを表示またはログに記録
+        console.error(data.error);
+      }
+    } else {
+      // フォーム送信のエラーメッセージを表示
+      displayErrors(data.errors);
+    }
+  }
+
+  // エラーメッセージを表示する関数
+  function displayErrors(errors) {
+    // エラーメッセージリストの要素を取得
+    const errorMessageList = document.getElementById('errorMessageList');
+    errorMessageList.innerHTML = '';
+
+    // エラーメッセージをリストに追加
+    for (const key in errors) {
+      if (Object.prototype.hasOwnProperty.call(errors, key)) {
+        const li = document.createElement('li');
+        li.textContent = errors[key];
+        errorMessageList.appendChild(li);
+      }
+    }
+
+    // エラーメッセージを表示
+    document.getElementById('errorMessages').style.display = 'block';
+  }
+
+  // ホームボタンのイベントリスナー
+  document.getElementById('homeButton').addEventListener('click', function() {
+    // ホーム画面への遷移
+    location.href = '{% url "activity:home" %}';
+  });
+
+  // レコードボタンのイベントリスナー
+  document.getElementById('recordButton').addEventListener('click', function() {
+    // レコード画面への遷移
+    location.href = '{% url "activity:activity_list" %}';
+  });
+</script>
+
+
 {% endblock content %}
