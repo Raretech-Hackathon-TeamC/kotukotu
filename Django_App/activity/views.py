@@ -29,8 +29,11 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
         for activity in qs:
             duration_dict[activity.date] += activity.duration
         # グラフに反映するためのデータを作成
-        x = list(duration_dict.keys())      #X軸データ
-        y = list(duration_dict.values())  #Y軸データ
+        x = []      #X軸データ
+        y = []      #Y軸データ
+        for date in date_list:
+            x.append(date)
+            y.append(duration_dict.get(date, 0)) #データが存在しない場合は0を代入
         chart = graph.Plot_Graph(x,y) #グラフ作成
         #変数を渡す
         context = super().get_context_data(**kwargs)
