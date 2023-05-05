@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
+import matplotlib.dates as mdates
+from .models import ActivityRecord
+import pandas as pd
 #フォントの日本語対応
 from matplotlib import rcParams
 rcParams["font.family"] = "sans-serif"
@@ -27,6 +30,14 @@ def Plot_Graph(x,y):
 	plt.ylim(0, 480)                 #y軸最小値と最大値
 	plt.xlabel("date")               #xラベル
 	plt.ylabel("duration")           #yラベル
+	plt.subplots_adjust(bottom=0.3)  #x軸ラベルが重ならないように位置を調整
+
+	#x軸のラベルを設定
+	ax = plt.gca()
+	ax.xaxis.set_major_locator(mdates.DayLocator(interval=1))
+	ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d'))
+	plt.gcf().autofmt_xdate()
+
 	plt.tight_layout()               #レイアウト
 	graph = Output_Graph()           #グラフプロット
 	return graph

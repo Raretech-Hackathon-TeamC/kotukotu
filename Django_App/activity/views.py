@@ -6,7 +6,7 @@ from .models import ActivityRecord
 from .forms import ActivityRecordForm
 from . import models
 from . import graph
-import matplotlib.dates as mdates
+import datetime
 
 # ホーム画面(仮)
 # Todo: 未完了
@@ -16,11 +16,16 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
     
     #変数としてグラフイメージをテンプレートに渡す
     def get_context_data(self, **kwargs):
-        #グラフオブジェクト
-        qs    = models.ActivityRecord.objects.all()  #モデルクラス(ActivityRecordテーブル)読込
-        x     = [x.date for x in qs]                 #X軸データ
-        y     = [y.duration for y in qs]             #Y軸データ
-        chart = graph.Plot_Graph(x,y)                #グラフ作成
+        # 最新のデータの日付を取得
+        latest_date = models.ActivityRecord.objects.latest('date').date
+        # 最新のデータから7日分の日付を取得
+        date_list = [latest_date - datetime.timedelta(days=x) for x in range(7)]
+        date_list.reverse()
+        # グラフのデータを取得
+        qs = models.ActivityRecord.objects.filter(date__in=date_list)  
+        x = [x.date for x in qs]      #X軸データ
+        y = [y.duration for y in qs]  #Y軸データ
+        chart = graph.Plot_Graph(x,y) #グラフ作成
         #変数を渡す
         context = super().get_context_data(**kwargs)
         context['chart'] = chart
