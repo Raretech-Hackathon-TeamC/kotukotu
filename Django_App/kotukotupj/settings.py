@@ -153,5 +153,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # LoginView,LogoutViewを使用したときの遷移先指定
 LOGIN_URL = '/users/login'
-LOGIN_REDIRECT_URL = '/users/home'
+LOGIN_REDIRECT_URL = '/activity/'
 LOGOUT_REDIRECT_URL = '/users/login'
