@@ -7,6 +7,7 @@ from .forms import ActivityRecordForm
 from . import models
 from . import graph
 import datetime
+from collections import defaultdict
 
 # ホーム画面(仮)
 # Todo: 未完了
@@ -23,8 +24,13 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
         date_list.reverse()
         # グラフのデータを取得
         qs = models.ActivityRecord.objects.filter(date__in=date_list)  
-        x = [x.date for x in qs]      #X軸データ
-        y = [y.duration for y in qs]  #Y軸データ
+        # 同じ日付のデータを合算するための辞書を用意
+        duration_dict = defaultdict(int)
+        for activity in qs:
+            duration_dict[activity.date] += activity.duration
+        # グラフに反映するためのデータを作成
+        x = list(duration_dict.keys())      #X軸データ
+        y = list(duration_dict.values())  #Y軸データ
         chart = graph.Plot_Graph(x,y) #グラフ作成
         #変数を渡す
         context = super().get_context_data(**kwargs)
