@@ -7,7 +7,17 @@
   <a href="{% url 'activity:activity_add' %}">積み上げを記録する</a>
 
   <h1>日々の積み上げ記録</h1>
-  <div>
-    <img src="data:image/png;base64,{{ chart | safe }}" alt="Graph">
-  </div>
+  <p>日付</p>
+  <ul>
+    {% for date in date_list %}
+      <li>{{ date }}</li>
+    {% endfor %}
+  </ul>
+  <p>時間</p>
+  <ul>
+    {% for duration in duration_list %}
+      <li>{{ duration }}</li>
+    {% endfor %}
+  </ul>
+
 {% endblock content %}
