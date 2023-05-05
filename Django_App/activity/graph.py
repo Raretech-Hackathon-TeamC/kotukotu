@@ -2,8 +2,6 @@ import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
 import matplotlib.dates as mdates
-from .models import ActivityRecord
-import pandas as pd
 #フォントの日本語対応
 from matplotlib import rcParams
 rcParams["font.family"] = "sans-serif"
@@ -23,13 +21,12 @@ def Output_Graph():
 
 #グラフをプロットするための関数
 def Plot_Graph(x,y):
+	y = [i / 60 for i in y]
 	plt.switch_backend("AGG")        #スクリプトを出力させない
 	plt.figure(figsize=(10,5))       #グラフサイズ
 	plt.bar(x,y)                     #グラフ作成
-	# plt.title("Revenue per Date")  #グラフタイトル
-	plt.ylim(0, 480)                 #y軸最小値と最大値
-	plt.xlabel("date")               #xラベル
-	plt.ylabel("duration")           #yラベル
+	plt.ylim(0, 6)                   #y軸最小値と最大値
+	plt.yticks([0, 2, 4, 6])         #y軸メモリを2単位で表示
 	plt.subplots_adjust(bottom=0.3)  #x軸ラベルが重ならないように位置を調整
 
 	#x軸のラベルを設定
