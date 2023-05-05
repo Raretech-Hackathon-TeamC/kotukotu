@@ -17,10 +17,10 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
     
     #変数としてグラフイメージをテンプレートに渡す
     def get_context_data(self, **kwargs):
-        # 最新のデータの日付を取得
-        latest_date = models.ActivityRecord.objects.latest('date').date
-        # 最新のデータから7日分の日付を取得
-        date_list = [latest_date - datetime.timedelta(days=x) for x in range(7)]
+        # ページを表示している日付を取得
+        today = datetime.date.today()
+        # ページを表示している日付から7日分の日付を取得
+        date_list = [today - datetime.timedelta(days=x) for x in range(6, -1, -1)]
         date_list.reverse()
         # グラフのデータを取得
         qs = models.ActivityRecord.objects.filter(date__in=date_list)  
