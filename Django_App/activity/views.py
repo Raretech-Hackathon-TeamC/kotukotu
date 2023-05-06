@@ -20,9 +20,12 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
         records = ActivityRecord.objects.all()
         date_list = [record.date.strftime('%-m/%-d') for record in records]
         duration_list = [record.duration for record in records]
+        total_duration = sum(duration_list) // 60, sum(duration_list) % 60  # 合計時間を計算して'時間:分'の形式に変換
+        total_duration_str = f"{total_duration[0]}時間{total_duration[1]}分" # 合計時間を文字列に変換
         duration_list = [round(record.duration / 60, 2) for record in records] # 分単位から小数点第２位の時間に変換
         context['date_list'] = date_list
         context['duration_list'] = duration_list
+        context['total_duration'] = total_duration_str # home.htmlに合計時間を渡す
         return context
 
 

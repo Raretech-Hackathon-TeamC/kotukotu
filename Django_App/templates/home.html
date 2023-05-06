@@ -7,6 +7,8 @@
   <a href="{% url 'activity:activity_add' %}">積み上げを記録する</a>
 
   <h1>日々の積み上げ記録</h1>
+  <p>累計時間</p>
+    {{ total_duration }}
   <p>日付</p>
   <ul>
     {% for date in date_list %}
