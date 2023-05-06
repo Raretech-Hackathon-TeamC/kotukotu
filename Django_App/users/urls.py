@@ -1,6 +1,5 @@
 from django.urls import path
 from users.views import ( 
-    # TODO:HomeViewはactivityアプリを作成した後に削除
   RegistUserView, UserLoginView, UserLogoutView
 )
 
