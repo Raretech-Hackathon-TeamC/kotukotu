@@ -4,8 +4,6 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 from .models import ActivityRecord
 from .forms import ActivityRecordForm
 
@@ -16,27 +14,34 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
 
 # 積み上げ追加画面
 class ActivityAddView(LoginRequiredMixin, generic.CreateView):
+    # モデル・フォーム・テンプレート・リダイレクト先の設定
     model = ActivityRecord
     form_class = ActivityRecordForm
     template_name = 'activity_add.html'
     success_url = reverse_lazy('activity:home')
 
+    # フォームが有効な場合、リクエストユーザーを設定
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-    @method_decorator(csrf_exempt)
+    # POSTリクエストの場合、ajax_submitメソッドを呼び出す
     def dispatch(self, request, *args, **kwargs):
         if request.method == 'POST':
             return self.ajax_submit(request)
+        # それ以外の場合、親クラスのdispatchメソッドを呼び出す
         return super(ActivityAddView, self).dispatch(request, *args, **kwargs)
 
+    # ajax_submitメソッド(非同期通信で、)
     def ajax_submit(self, request):
+        # リクエストからフォームを作成
         form = self.form_class(request.POST, instance=ActivityRecord(user=request.user))
 
+        # フォームが有効な場合、保存し成功メッセージを返す
         if form.is_valid():
             form.save()
             return JsonResponse({"success": True})
+        # フォームが無効な場合、エラーメッセージを返す
         else:
             return JsonResponse({"success": False, "errors": form.errors})
 
