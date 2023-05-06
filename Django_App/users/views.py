@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login
 class RegistUserView(CreateView):
     template_name = 'regist.html'
     form_class = RegistForm
-    success_url = reverse_lazy('users:home')
+    success_url = reverse_lazy('activity:home')
 
     def form_valid(self, form):
         response = super().form_valid(form)

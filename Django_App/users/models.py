@@ -40,5 +40,4 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def get_absolute_url(self):
-        # TODO: activityアプリを作成した後に、('activity:home')に修正する
-        return reverse_lazy('users:home')
+        return reverse_lazy('activity:home')
