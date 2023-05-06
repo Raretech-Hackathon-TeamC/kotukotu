@@ -13,6 +13,7 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['username'] = self.request.user.user_name   # Usersからユーザー名前を取得
         records = ActivityRecord.objects.all()   # ActivityRecordの全てのデータを取得する
         date_list = [record.date.strftime('%-m/%-d') for record in records]  # 日付のリストを作成し、'%-m/%-d'のフォーマットに変換する
         duration_list = [record.duration for record in records]   # 各レコードのdurationをduration_listに格納する
