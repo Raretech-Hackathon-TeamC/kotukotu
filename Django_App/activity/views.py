@@ -7,23 +7,25 @@ from django.http import JsonResponse
 from .models import ActivityRecord
 from .forms import ActivityRecordForm
 
-# ホーム画面(仮)
-# Todo: 未完了
+# ホーム画面
 class HomeView(LoginRequiredMixin, generic.TemplateView):
-    #テンプレートファイル連携
-    template_name = 'home.html'
+    template_name = 'home.html'   #テンプレートファイル連携
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        records = ActivityRecord.objects.all()
-        date_list = [record.date.strftime('%-m/%-d') for record in records]
-        duration_list = [record.duration for record in records]
-        total_duration = sum(duration_list) // 60, sum(duration_list) % 60  # 合計時間を計算して'時間:分'の形式に変換
-        total_duration_str = f"{total_duration[0]}時間{total_duration[1]}分" # 合計時間を文字列に変換
-        duration_list = [round(record.duration / 60, 2) for record in records] # 分単位から小数点第２位の時間に変換
+        records = ActivityRecord.objects.all()   # ActivityRecordの全てのデータを取得する
+        date_list = [record.date.strftime('%-m/%-d') for record in records]  # 日付のリストを作成し、'%-m/%-d'のフォーマットに変換する
+        duration_list = [record.duration for record in records]   # 各レコードのdurationをduration_listに格納する
+        total_duration = sum(duration_list) // 60, sum(duration_list) % 60  # duration_listから総時間を計算する
+        total_duration_str = f"{total_duration[0]}時間{total_duration[1]}分" # 計算結果を'時間:分'の形式に変換してtotal_duration_strに格納する
+        total_days = len(set(date_list))   # date_listから総日数を計算する
+        duration_list = [round(record.duration / 60, 2) for record in records] # duration_listから各durationを'時間.分'の形式に変換してduration_listに格納する
+
+        # コンテキストに必要な変数を格納し、returnする
         context['date_list'] = date_list
         context['duration_list'] = duration_list
-        context['total_duration'] = total_duration_str # home.htmlに合計時間を渡す
+        context['total_duration'] = total_duration_str
+        context['total_days'] = total_days
         return context
 
 
