@@ -10,6 +10,7 @@ from datetime import timedelta, date
 from django.http import JsonResponse
 
 # ホーム画面
+# TODO: カテゴリー機能別色分け機能の追加
 class HomeView(LoginRequiredMixin, generic.View):
 
     def get(self, request, *args, **kwargs):
@@ -64,6 +65,7 @@ class HomeView(LoginRequiredMixin, generic.View):
 
 
 # 積み上げ追加画面
+# TODO:カテゴリー選択機能追加
 class ActivityAddView(LoginRequiredMixin, generic.CreateView):
     # モデル・フォーム・テンプレート・リダイレクト先の設定
     model = ActivityRecord
@@ -120,6 +122,7 @@ class ActivityListView(LoginRequiredMixin, generic.ListView):
 
 
 # 積み上げ編集画面
+# TODO: カテゴリー変更機能の追加
 class ActivityEditView(LoginRequiredMixin, generic.UpdateView):
     model = ActivityRecord
     form_class = ActivityRecordForm

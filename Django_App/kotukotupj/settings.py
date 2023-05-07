@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'activity.apps.ActivityConfig',
+    'categories.apps.CategoriesConfig',
 ]
 
 # カスタムユーザーモデルを指定
