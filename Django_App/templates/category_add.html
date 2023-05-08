@@ -30,7 +30,7 @@
     let categoryName = document.getElementsByName("name")[0].value;
     let formData = new FormData(event.target);
 
-    fetch("{% url 'categories:check_duplicate' %}", {
+    fetch("{% url 'categories:check_duplicate_add' %}", {
       method: "POST",
       body: JSON.stringify({ "name": categoryName }),
       headers: {
