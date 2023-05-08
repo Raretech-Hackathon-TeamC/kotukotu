@@ -30,7 +30,7 @@ class CategoryAddView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 # 同じ名前のカテゴリーが存在するか確認
-def check_duplicate(request):
+def check_duplicate_add(request):
     if request.method == "POST":
         data = json.loads(request.body)
         category_name = data.get("name")
@@ -63,6 +63,33 @@ def category_restore(request, pk):
 
 # TODO: カテゴリーの編集
     #* カテゴリー毎のhome画面でモーダルで表示(カテゴリー名・目標・選択)
+# カテゴリー編集
+class CategoryEditView(LoginRequiredMixin, generic.UpdateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'category_edit.html'
+    success_url = reverse_lazy('activity:home')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+# 編集するカテゴリーは含めずに重複を検索
+def check_duplicate_edit(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        category_name = data.get("name")
+        exclude_id = data.get("exclude_id", None)
+        existing_category = Category.objects.filter(user=request.user, name=category_name).exclude(id=exclude_id)
+
+        if existing_category.exists():
+            return JsonResponse({"duplicate": True, "category_id": None})
+        else:
+            return JsonResponse({"duplicate": False})
+    else:
+        return JsonResponse({"error": "Invalid request method"})
+
+
 
 # TODO: カテゴリーの削除機能
     #* カテゴリー毎のhome画面で削除モーダルを表示し削除
