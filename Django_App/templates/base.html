@@ -1,13 +1,75 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>kotukotu</title>
-</head>
-<body>
-  {% block content %}
-  {% endblock content %}
-</body>
+ <head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  {% comment %} 現在はCDNで使っている。 {% endcomment %}
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+
+  {% comment %} これではできてない。あるはずなのに質問。 {% endcomment %}
+  {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css' %}" /> {% endcomment %}
+
+  {% comment %} 一部だけ子テンプレートで読み込ませたい時使う。 {% endcomment %}
+  {% block extra_head %}{% endblock %}
+
+  {% comment %} タイトルの継承ってどうやるんだろ {% endcomment %}
+  <title>本番環境の方やで</title>
+
+  {% comment %} フォント設定。 {% endcomment %}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Emoji&family=Noto+Sans+JP:wght@100;200;300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    {% comment %} cdnで色をカスタムできないからhtmlのスタイルで当てる。importは最後の手段らしい。 {% endcomment %}
+    <style>
+        :root {
+          --color-blackGreen: #8AA7A1;
+          --color-whiteGreen: #ADC7C2;
+          --color-textBlack: #474747;
+          --color-snow: #F2F2F2;
+          --color-orangerange: #E6BC87;
+          --color-modalGray:#D9D9D9;
+        }
+        .bg-blackGreen {
+          background-color: var(--color-blackGreen);
+        }
+        .hover\:bg-blackGreen:hover {
+          background-color: var(--color-blackGreen);
+        }
+        .text-textBlack {
+          color: var(--color-textBlack);
+        }
+        .text-blackGreen {
+            color: var(--color-blackGreen);
+          }
+        .hover\:text-snow:hover {
+          color: var(--color-snow);
+        }
+        .bg-snow {
+          background-color: var(--color-snow);
+        }
+        .hover\:bg-whiteGreen:hover {
+          background-color: var(--color-whiteGreen)!important;
+        }
+        .btn-blackGreen {
+            background-color: var(--color-blackGreen) !important;
+        }
+      </style>
+    
+    
+    
+    
+  
+ </head>
+
+ {% comment %} body classの継承のやり方。 {% endcomment %}
+ <body class="{% block body_class %}default-class{% endblock body_class %}">
+  {% block content %} {% endblock content %}
+ </body>
 </html>
