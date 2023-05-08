@@ -131,7 +131,9 @@ TIME_ZONE = 'Asia/Tokyo'
 
 # STATIC_ROOTを設定
 # Djangoの管理者画面にHTML、CSS、Javascriptが適用されます
-STATIC_ROOT = "/static/"
+# STATIC_ROOT = "/static/" ほそまつがコメントアウト。下を追加。
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
 STATIC_URL = "/static/"
 
 USE_I18N = True
@@ -155,3 +157,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/users/login'
 LOGIN_REDIRECT_URL = '/users/home'
 LOGOUT_REDIRECT_URL = '/users/login'
+
+# ほそまつ追加。静的ファイルの設定
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
