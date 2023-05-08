@@ -15,9 +15,6 @@ from .forms import CategoryForm
     #* カテゴリー毎の累計時間・累計日数の表示
     #* グラフの表示に必要なjson型データの送信
 
-# TODO: カテゴリー作成機能
-    #* activity:HomeViewでimportする必要あり
-    #* home内でカテゴリー追加モーダルを表示(カテゴリー名・目標・色を選択)
 # カテゴリー作成機能
 class CategoryAddView(LoginRequiredMixin, generic.CreateView):
     model = Category
@@ -61,8 +58,6 @@ def category_restore(request, pk):
     category.save()
     return HttpResponseRedirect(reverse_lazy('activity:home'))
 
-# TODO: カテゴリーの編集
-    #* カテゴリー毎のhome画面でモーダルで表示(カテゴリー名・目標・選択)
 # カテゴリー編集
 class CategoryEditView(LoginRequiredMixin, generic.UpdateView):
     model = Category
