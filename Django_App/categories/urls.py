@@ -10,4 +10,5 @@ urlpatterns = [
     path('restore/<int:pk>/', views.category_restore, name='category_restore'),
     path('<int:pk>/edit/', views.CategoryEditView.as_view(), name='category_edit'),
     path('check_duplicate_edit/', views.check_duplicate_edit, name='check_duplicate_edit'),
+    path('<int:pk>/delete/', views.CategoryDeleteView.as_view(), name='category_delete')
 ]

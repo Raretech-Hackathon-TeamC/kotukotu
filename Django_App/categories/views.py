@@ -3,6 +3,7 @@ from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 import json
 from .models import Category
 from .forms import CategoryForm
@@ -84,8 +85,10 @@ def check_duplicate_edit(request):
     else:
         return JsonResponse({"error": "Invalid request method"})
 
-
-
-# TODO: カテゴリーの削除機能
-    #* カテゴリー毎のhome画面で削除モーダルを表示し削除
-    #* カテゴリー削除はis_deletedをtureに変更
+# カテゴリー削除(論理削除)
+class CategoryDeleteView(LoginRequiredMixin, generic.View):
+    def post(self, request, *args, **kwargs):
+        category = get_object_or_404(Category, id=kwargs['pk'], user=request.user)
+        category.is_deleted = True
+        category.save()
+        return HttpResponseRedirect(reverse_lazy('activity:home'))
