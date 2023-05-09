@@ -4,10 +4,10 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
 from django.http import JsonResponse
+from django.core import serializers
 from .models import ActivityRecord
 from .forms import ActivityRecordForm
 from datetime import timedelta, date
-from django.http import JsonResponse
 
 # ホーム画面
 # TODO: カテゴリー機能別色分け機能の追加
@@ -113,12 +113,13 @@ def get_total_days(request):
     return JsonResponse({"total_days": total_days})
 
 # レコード画面(積み上げ一覧)
-class ActivityListView(LoginRequiredMixin, generic.ListView):
-    model = ActivityRecord
-    template_name = 'activity_list.html'
-
-    def get_queryset(self):
-        return super().get_queryset().filter(user=self.request.user)
+class ActivityListView(LoginRequiredMixin, generic.View):
+    def get(self, request, *args, **kwargs):
+        # ログインしているユーザーの記録を14日分降順で
+        activities = ActivityRecord.objects.filter(user=request.user).order_by('-date')[:14]
+        # json型のデータに変換し送信
+        data = serializers.serialize('json', activities, fields=('date', 'duration', 'memo'))
+        return JsonResponse(data, safe=False)
 
 
 # 積み上げ編集画面
