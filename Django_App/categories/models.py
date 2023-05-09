@@ -11,6 +11,12 @@ class Category(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"{self.user}-{self.name},{self.goal}"
+
 class ActivityCategory(models.Model):
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     activity_record = models.ForeignKey(ActivityRecord, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f"{self.user}-{self.category}{self.activity_record}"
