@@ -12,5 +12,3 @@ urlpatterns = [
     path('<int:pk>/delete/', views.ActivityDeleteView.as_view(), name='activity_delete'),
     path('get_total_days/', views.get_total_days, name='get_total_days'),
 ]
-
-# TODO:ホーム(home)画面の作成

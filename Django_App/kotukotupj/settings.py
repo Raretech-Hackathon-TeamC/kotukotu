@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'activity.apps.ActivityConfig',
+    'categories.apps.CategoriesConfig',
 ]
 
 # カスタムユーザーモデルを指定
@@ -155,7 +156,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # LoginView,LogoutViewを使用したときの遷移先指定
 LOGIN_URL = '/users/login'
-LOGIN_REDIRECT_URL = '/users/home'
+LOGIN_REDIRECT_URL = '/activity/'
 LOGOUT_REDIRECT_URL = '/users/login'
 
 # ほそまつ追加。静的ファイルの設定

@@ -1,23 +1,14 @@
-from django.shortcuts import render
 from django.views.generic.edit import CreateView
-from django.views.generic.base import TemplateView
 from users.forms import RegistForm, UserLoginForm
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
 
-# TODO:homeはactivityアプリを作成した後に削除
-# Home画面
-class HomeView(LoginRequiredMixin, TemplateView):
-    template_name = 'home.html'
-
-# TODO:user登録後の画面遷移がhomeにならない問題（未解決）
 # ユーザー登録用
 class RegistUserView(CreateView):
     template_name = 'regist.html'
     form_class = RegistForm
-    success_url = reverse_lazy('users:home')
+    success_url = reverse_lazy('activity:home')
 
     def form_valid(self, form):
         response = super().form_valid(form)

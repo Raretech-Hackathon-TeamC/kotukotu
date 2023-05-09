@@ -1,6 +1,5 @@
 from django.db import models
 from django.urls import reverse_lazy
-
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin, UserManager
 )
@@ -23,7 +22,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    user_name = models.CharField(max_length=10)
+    user_name = models.CharField(max_length=20)
     email = models.EmailField(max_length=255, unique=True, error_messages={
             "unique": "このメールアドレスは既に使用されています。",
         },)
@@ -40,5 +39,4 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def get_absolute_url(self):
-        # TODO: activityアプリを作成した後に、('activity:home')に修正する
-        return reverse_lazy('users:home')
+        return reverse_lazy('activity:home')
