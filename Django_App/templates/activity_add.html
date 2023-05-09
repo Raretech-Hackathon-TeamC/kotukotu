@@ -1,22 +1,232 @@
 {% extends 'base.html' %}
 
+{% block body_class %}
+bg-snow text-textBlack font-NotoSans
+{% endblock body_class %}
+
+{% load static %}
 {% block content %}
-  <h1>積み上げ追加</h1>
+
+<!-- ナビゲーションバーを作成 lgは1024pxからのサイズ-->
+<header class="bg-blackGreen w-full fixed top-0 left-0 h-10 lg:h-20 z-10">
+  <div class="container mx-auto px-4 h-full">
+   <nav class="flex items-center justify-between h-full">
+    <div class="flex items-center">
+     <a href="{% url 'activity:home' %}" class="transform hover:scale-105 transition duration-300">
+      <img
+       src="{% static 'admin/img/kotukotu_thumbnail.png' %}"
+       alt="サムネイルのカメの画像"
+       class="h-10 lg:h-20 w-auto py-1 object-cover rounded-xl"
+      />
+     </a>
+    </div>
+    <div class="flex items-center">
+     <ul class="hidden md:flex space-x-8 text-white">
+      <li>
+        <a href="{% url 'activity:home' %}" class="hover:underline">ホーム</a>
+      </li>
+      <li>
+       <a href="{% url 'activity:activity_list' %}" class="hover:underline">レコード</a>
+      </li>
+      <li>
+       <a href="{% url 'activity:activity_add' %}" class="hover:underline">入力</a>
+      </li>
+      <li>
+       <a href="#" class="hover:underline">カテゴリー</a>
+      </li>
+     </ul>
+     <button
+      type="submit"
+      class="bg-white text-blackGreen px-4 py-1 rounded-full ml-4 hidden md:block"
+      onclick="window.location.href='{% url 'users:logout' %}'"
+     >
+      ログアウト
+     </button>
+     <!-- ハンバーガーメニューアイコン（横幅760px以下で表示） -->
+     <button class="md:hidden text-white focus:outline-none" aria-label="メニュー">
+      <!-- 画像を埋め込む -->
+      <img
+       src="{% static 'admin/img/hamburgur.png' %}"
+       alt="ハンバーガーメニュー"
+       class="hamburger-menu md:hidden"
+       style="height: 40px; width: auto; object-fit: contain; float: left"
+      />
+     </button>
+    </div>
+   </nav>
+  </div>
+ </header>
+
+
+ <!-- モバイルメニュー（横幅760px以下でハンバーガーメニューを押したら表示） -->
+ <div
+  id="mobileMenu"
+  class="hidden fixed top-0 right-0 w-1/2 h-full z-20 bg-blackGreen bg-opacity-80 md:hidden"
+ >
+  <!-- 閉じるボタン -->
+  <img
+   id="closeMenuButton"
+   src="{% static 'admin/img/close_button.png' %}"
+   alt="閉じるボタン"
+   class="absolute top-11 right-2 h-6 w-auto cursor-pointer z-30"
+  />
+
+  <!-- メニューのコンテンツが含まれるコンテナ -->
+  <div class="container mx-auto px-4 h-full flex flex-col justify-center items-center z-30">
+   <!-- メニューのリスト -->
+   <ul class="text-white text-center space-y-4">
+    <li>
+     <a href="{% url 'activity:home' %}" class="hover:underline">ホーム</a>
+    </li>
+    <li>
+     <a href="{% url 'activity:activity_list' %}" class="hover:underline">レコード</a>
+    </li>
+    <li>
+     <a href="{% url 'activity:activity_add' %}" class="hover:underline">入力画面</a>
+    </li>
+    <li>
+     <a href="#" class="hover:underline">カテゴリー</a>
+    </li>
+    <li>
+     <button type="submit" class="bg-white text-blackGreen px-4 py-1 rounded-full mt-4"
+     onclick="window.location.href='{% url 'users:logout' %}'"
+     >
+      ログアウト
+     </button>
+    </li>
+   </ul>
+  </div>
+ </div>
+
+
+ <!-- 左上のホーム＞のやつを作成 -->
+ <div class="container mx-auto px-4 pt-20 text-textBlack">
+  <nav class="text-lg">
+   <a href="{% url 'activity:home' %}" class="hover:underline text-#474747">ホーム</a>
+   <span> &gt; </span>
+   <span>入力画面</span>
+  </nav>
+ </div>
+
+
+<!-- タイトルの作成 -->
+<h1 class="container mx-auto px-4 pt-4 text-center bg-snow text-xl md:text-3xl text-textBlack">
+  積み上げを入力する
+ </h1>
+ <hr class="mx-10 my-4 border-2 border-blackGreen shadow-md" />
+
+
+
+{% comment %} 上は共通部分。下が調整必要。 {% endcomment %}
+
+<!-- 入力フォーム3つを囲むのコンテナ。小さくなった時の文字の消失はまた後日訂正 -->
+<div class="container mx-auto px-4 py-10">
+  <form id="activityRecordForm" method="post" class="grid grid-cols-1 gap-6 max-w-screen-xl mx-auto activityRecordForm" onsubmit="event.preventDefault(); submitForm();">
+      {% csrf_token %}
+    <!-- カテゴリー選択フォーム -->
+    <div class="relative mx-auto w-1/2 h-14">
+      <div class="absolute inset-0 bg-blackGreen rounded-lg"></div>
+      <img src="{% static 'admin/img/pencil-icon.png' %}" alt="category icon" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6" />
+      <select id="category" name="{{ form.category.name }}" class="form-select block bg-gray-300 w-1/2 translate-x-1/2 translate-y-1/3 pl-16 pr-8 py-2 bg-transparent text-textBlack rounded-lg">
+          <!-- カテゴリーオプションはJavaScriptで動的に追加する。 -->
+      </select>
+  </div>
+
+  <!-- カレンダー選択フォーム -->
+  <div class="relative mx-auto w-1/2 h-14">
+      <div class="absolute inset-0 bg-blackGreen rounded-lg"></div>
+      <img src="{% static 'admin/img/calendar-icon.png' %}" alt="calendar icon" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6" />
+      <input type="date" id="date" name="{{ form.date.name }}" class="block bg-gray-300 w-1/2 translate-x-1/2 translate-y-1/4 pl-16 pr-8 py-2 bg-transparent text-textBlack rounded-lg" value="今日の日付" />
+  </div>
+
+  <!-- 時間選択フォーム -->
+  <div class="relative mx-auto w-1/2 h-14">
+      <div class="absolute inset-0 bg-blackGreen rounded-lg"></div>
+      <img src="{% static 'admin/img/clock-icon.png' %}" alt="clock icon" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6" />
+      <input type="time" id="time" name="{{ form.time.name }}" class="block bg-gray-300 w-1/2 translate-x-1/2 translate-y-1/4 pl-16 pr-8 py-2 bg-transparent text-textBlack rounded-lg" value="00:00" />
+  </div>
+
+  <!-- メモの入力フォーム。小さくなったときのリサイズはまた後日。 -->
+  <div class="bg-white w-7/12 mx-auto p-6 rounded shadow relative">
+      <textarea class="w-full text-sm border-none outline-none resize-none" rows="10" placeholder="メモ" name="memo"></textarea>
+  </div>
+
+  <!-- 送信ボタンを追加 -->
+  <div class="text-center">
+    <button type="submit" class="flex justify-center mx-auto btn-blackGreen text-textBlack h-10 w-40 p-2 rounded mt-4">
+      積み上げを記録する
+    </button>
+  </div>
+  </form>
+  </div>
+  </div>
+
+
+ <!-- モーダルの背景。普段はhiddenで、ボタンを押されたらjsでremove。 -->
+ <div id="modal-bg" class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50">
+  <!-- モーダルの背景（見えてる部分） -->
+  <div class="bg-white w-11/12 h-2/3 md:max-w-md mx-auto rounded shadow-lg p-6 mt-20 relative">
+   <!-- 閉じるボタン。 -->
+   <button id="close-modal" class="absolute top-2 right-2">
+    <img src="{% static 'admin/img/close_button.png' %}" alt="close" width="24" height="24" />
+   </button>
+   <!-- 完了文 -->
+   <h3 class="text-xl font-bold mb-4 text-center mt-8">入力が完了しました</h3>
+
+   <!-- 累計の円。 -->
+   <!-- 累計日数の円、累計時間の要素、積み上げボタンを囲む部分（形変えたいからコンテナではない） -->
+   <div class="w-full mx-auto">
+    <div class="flex flex-wrap justify-between">
+     <!-- 累計日数の円の要素の位置する場所（大きさ） -->
+     <div class="mx-auto">
+      <div class="relative w-28 h-28 md:w-48 md:h-48">
+       <div
+        class="absolute inset-0 flex justify-center items-center bg-orangerange rounded-full w-full h-full shadow-lg"
+       ></div>
+       <div
+        class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-textBlack rounded-full p-4 w-3/4 h-3/4"
+       >
+        <div class="flex justify-center items-center h-full">
+         <div class="text-center">
+          <p class="mb-1 text-sm md:text-base">累計日数</p>
+          {% comment %} idがtotaldaysでおなじだったからこのまま反映されそう。 {% endcomment %}
+          <span class="text-2xl md:text-3xl" id="totalDays">:</span>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <p class="text-center mt-8">ナイス継続です明日もコツコツ頑張りましょう!</p>
+   <div class="flex justify-center mt-8 space-x-4">
+    {% comment %} 書くボタンにバックエンドに合わせてidを足した。 {% endcomment %}
+    <button class="bg-orangerange text-white px-4 py-2 rounded" id="homeButton">ホームへ</button>
+    <button class="bg-orangerange text-white px-4 py-2 rounded" id="recordButton">レコードへ</button>
+   </div>
+  </div>
+ </div>
+
+
+{% comment %} ここからが元々あった分。完了したものからコメントアウト {% endcomment %}
+  {% comment %} <h1>積み上げ追加</h1>
   <form id="activityRecordForm" method="post" class="activityRecordForm" onsubmit="event.preventDefault(); submitForm();">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">保存</button>
+
+
     <a href="{% url 'activity:activity_list' %}">キャンセル</a>
     <a href="{% url 'activity:home' %}">ホーム画面</a>
-  </form>
+  </form> {% endcomment %}
 
   {# Modal #}
-  <div id="successModal" style="display: none;">
+  {% comment %} <div id="successModal" style="display: none;">
     <h5>Good job!</h5>
     <p id="totalDays">活動累計日数: 0</p>
     <button id="homeButton">ホームへ</button>
     <button id="recordButton">レコードへ</button>
-  </div>
+  </div> {% endcomment %}
 
   {# Error messages #}
   <div id="errorMessages" style="display: none;">
@@ -24,6 +234,10 @@
     </ul>
   </div>
 
+  <script src="{% static 'admin/js/activity_add.js' %}"></script>
+  <script src="{% static 'admin/js/home.js' %}"></script>
+
+{% comment %}
 <script>
 // フォームを送信する非同期関数
 async function submitForm() {
@@ -104,6 +318,6 @@ async function submitForm() {
     location.href = '{% url "activity:activity_list" %}';
   });
 </script>
-
+{% endcomment %}
 
 {% endblock content %}

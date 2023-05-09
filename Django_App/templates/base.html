@@ -14,6 +14,7 @@
 
   {% comment %} 一部だけ子テンプレートで読み込ませたい時使う。 {% endcomment %}
   {% block extra_head %}{% endblock %}
+  {% block extra_styles %}{% endblock %}
 
   {% comment %} タイトルの継承ってどうやるんだろ {% endcomment %}
   <title>本番環境の方やで</title>
@@ -39,6 +40,12 @@
         .bg-blackGreen {
           background-color: var(--color-blackGreen);
         }
+        .bg-modalGray {
+          background-color: var( --color-modalGray);
+        }
+        .bg-orangerange {
+          background-color: var(--color-orangerange);
+        }
         .hover\:bg-blackGreen:hover {
           background-color: var(--color-blackGreen);
         }
@@ -59,6 +66,9 @@
         }
         .btn-blackGreen {
             background-color: var(--color-blackGreen) !important;
+        }
+        .border-blackGreen{
+          border-color: var(--color-blackGreen) !important;
         }
       </style>
     

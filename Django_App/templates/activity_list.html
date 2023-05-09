@@ -1,8 +1,229 @@
 {% extends 'base.html' %}
 
+{% block body_class %}
+bg-snow text-textBlack font-NotoSans
+{% endblock body_class %}
+
+{% comment %} レコードに当てはめるためのcss {% endcomment %}
+{% block extra_styles %}
+<style>
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: scroll;
+    max-height: calc(7 * (60px + 0.8rem * 2));
+    width: calc(100% - 80px);
+    padding: 0 80px;
+    background-color: #ffffff;
+    margin: 0 auto;
+  }
+
+  .chat-bubble {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #adc7c2;
+    border-radius: 1rem;
+    padding: 0.8rem 1rem;
+    margin: 0.8rem 0;
+    max-width: 90%;
+    gap: 10px; /* アイテム間のスペースを調整する */
+  }
+
+  .chat-bubble:before {
+    content: "";
+    position: absolute;
+    right: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 8px solid transparent;
+    border-left-color: #adc7c2;
+    z-index: 1;
+  }
+
+  .chat-image {
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    z-index: 2;
+  }
+
+  .trash-icon {
+    width: 20px;
+    height: 20px;
+  }
+</style>
+{% endblock %}
+
+
 {% load time_filters %} {# ここでtime_filtersをロードします #}
 
+{% load static %}
+
+
+
+
 {% block content %}
+
+
+<!-- ナビゲーションバーを作成 lgは1024pxからのサイズ-->
+<header class="bg-blackGreen w-full fixed top-0 left-0 h-10 lg:h-20 z-10">
+  <div class="container mx-auto px-4 h-full">
+   <nav class="flex items-center justify-between h-full">
+    <div class="flex items-center">
+     <a href="{% url 'activity:home' %}" class="transform hover:scale-105 transition duration-300">
+      <img
+       src="{% static 'admin/img/kotukotu_thumbnail.png' %}"
+       alt="サムネイルのカメの画像"
+       class="h-10 lg:h-20 w-auto py-1 object-cover rounded-xl"
+      />
+     </a>
+    </div>
+    <div class="flex items-center">
+     <ul class="hidden md:flex space-x-8 text-white">
+      <li>
+        <a href="{% url 'activity:home' %}" class="hover:underline">ホーム</a>
+      </li>
+      <li>
+       <a href="{% url 'activity:activity_list' %}" class="hover:underline">レコード</a>
+      </li>
+      <li>
+       <a href="{% url 'activity:activity_add' %}" class="hover:underline">入力</a>
+      </li>
+      <li>
+       <a href="#" class="hover:underline">カテゴリー</a>
+      </li>
+     </ul>
+     <button
+      type="submit"
+      class="bg-white text-blackGreen px-4 py-1 rounded-full ml-4 hidden md:block"
+      onclick="window.location.href='{% url 'users:logout' %}'"
+     >
+      ログアウト
+     </button>
+     <!-- ハンバーガーメニューアイコン（横幅760px以下で表示） -->
+     <button class="md:hidden text-white focus:outline-none" aria-label="メニュー">
+      <!-- 画像を埋め込む -->
+      <img
+       src="{% static 'admin/img/hamburgur.png' %}"
+       alt="ハンバーガーメニュー"
+       class="hamburger-menu md:hidden"
+       style="height: 40px; width: auto; object-fit: contain; float: left"
+      />
+     </button>
+    </div>
+   </nav>
+  </div>
+ </header>
+
+
+ <!-- モバイルメニュー（横幅760px以下でハンバーガーメニューを押したら表示） -->
+ <div
+  id="mobileMenu"
+  class="hidden fixed top-0 right-0 w-1/2 h-full z-20 bg-blackGreen bg-opacity-80 md:hidden"
+ >
+  <!-- 閉じるボタン -->
+  <img
+   id="closeMenuButton"
+   src="{% static 'admin/img/close_button.png' %}"
+   alt="閉じるボタン"
+   class="absolute top-11 right-2 h-6 w-auto cursor-pointer z-30"
+  />
+
+  <!-- メニューのコンテンツが含まれるコンテナ -->
+  <div class="container mx-auto px-4 h-full flex flex-col justify-center items-center z-30">
+   <!-- メニューのリスト -->
+   <ul class="text-white text-center space-y-4">
+    <li>
+     <a href="{% url 'activity:home' %}" class="hover:underline">ホーム</a>
+    </li>
+    <li>
+     <a href="{% url 'activity:activity_list' %}" class="hover:underline">レコード</a>
+    </li>
+    <li>
+     <a href="{% url 'activity:activity_add' %}" class="hover:underline">入力画面</a>
+    </li>
+    <li>
+     <a href="#" class="hover:underline">カテゴリー</a>
+    </li>
+    <li>
+     <button type="submit" class="bg-white text-blackGreen px-4 py-1 rounded-full mt-4"
+     onclick="window.location.href='{% url 'users:logout' %}'"
+     >
+      ログアウト
+     </button>
+    </li>
+   </ul>
+  </div>
+ </div>
+
+
+ <!-- 左上のホーム＞のやつを作成 -->
+ <div class="container mx-auto px-4 pt-20 text-textBlack">
+  <nav class="text-lg">
+   <a href="{% url 'activity:home' %}" class="hover:underline text-#474747">ホーム</a>
+   <span> &gt; </span>
+   <span>レコード</span>
+  </nav>
+ </div>
+
+
+<!-- タイトルの作成 -->
+<h1 class="container mx-auto px-4 pt-4 text-center bg-snow text-xl md:text-3xl text-textBlack">
+  レコード
+ </h1>
+ <hr class="mx-10 my-4 border-2 border-blackGreen shadow-md" />
+
+
+
+{% comment %} 以下が調整が必要な部分 {% endcomment %}
+
+
+ <!-- レコードの中身用のコンテナ -->
+ <div id="chat-container" class="chat-container bg-white px-4"></div>
+
+
+
+
+{% comment %} <table>
+  <thead>
+    <tr>
+      <th>日付</th>
+      <th>活動時間</th>
+      <th>メモ</th>
+      <th>編集</th>
+      <th>削除</th>
+    </tr>
+  </thead>
+  <tbody id="table-body">
+    {% for activity in object_list %}
+    <tr>
+      <td>{{ activity.date }}</td>
+      <td>{{ activity.duration|format_duration }}</td>
+      <td>{{ activity.memo }}</td>
+      <td><a href="{% url 'activity:activity_edit' activity.id %}">編集</a></td>
+      <td><a href="{% url 'activity:activity_delete' activity.id %}" class="deleteButton">削除</a></td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="5">まだ積み上げがありません。</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table> {% endcomment %}
+
+
+  <!-- Modalはバックを採用。ここからコーディングする。 -->
+   <div id="deleteModal" style="display: none;">
+     {% comment %}コンフリクトでコメントアウト中
   <header>
     <h1>積み上げ一覧</h1>
     <p><a href="{% url 'activity:home' %}">ホーム画面</a></p>
@@ -37,6 +258,7 @@
 
     <a href="{% url 'categories:category_add' %}">カテゴリーを作成する</a>
 
+      {% endcomment %}
   <!-- Modal -->
   <div id="deleteModal" style="display: none;">
     <h5>積み上げ削除</h5>
@@ -46,14 +268,14 @@
       {% csrf_token %}
       <button type="submit" id="deleteBtn">削除</button>
     </form>
-  </div>
+  </div> 
 
-
-  <script>
-  var deleteButtons = document.querySelectorAll('.deleteButton');  // 削除ボタンの取得
-  var deleteModal = document.getElementById('deleteModal');  // モーダルウィンドウの取得
-  var deleteForm = document.getElementById('deleteForm');  // モーダル内の削除ボタンの取得
-  var cancelButton = document.getElementById('cancelButton');  // モーダル内のキャンセルボタンの取得
+{% comment %} varからconstに変更。ほそまつ {% endcomment %}
+ <script>
+  const deleteButtons = document.querySelectorAll('.deleteButton');  // 削除ボタンの取得
+  const deleteModal = document.getElementById('deleteModal');  // モーダルウィンドウの取得
+  const deleteForm = document.getElementById('deleteForm');  // モーダル内の削除ボタンの取得
+  const cancelButton = document.getElementById('cancelButton');  // モーダル内のキャンセルボタンの取得
 
   deleteButtons.forEach(function(button) {
     button.addEventListener('click', function(event) {
@@ -66,6 +288,17 @@
   cancelButton.addEventListener('click', function() {
     deleteModal.style.display = 'none';  // モーダルウィンドウの非表示
   });
-  </script>
+  </script> 
+
+
+
+  
+ {% comment %} APIエンドポイントをジャバスクリプトで使用するため {% endcomment %}
+ <script>
+  const apiUrl = "{% url 'activity:activity_list' %}";
+</script>
+  <script src="{% static 'admin/js/activity_list.js' %}"></script>
+  <script src="{% static 'admin/js/home.js' %}"></script>
+
 
 {% endblock content%}

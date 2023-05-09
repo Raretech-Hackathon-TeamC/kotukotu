@@ -32,7 +32,7 @@ bg-snow text-textBlack font-NotoSans
        <a href="#" class="hover:underline">ホーム</a>
       </li>
       <li>
-       <a href="#" class="hover:underline">レコード</a>
+       <a href="{% url 'activity:activity_list' %}" class="hover:underline">レコード</a>
       </li>
       <li>
        <a href="{% url 'activity:activity_add' %}" class="hover:underline">記録</a>
@@ -94,8 +94,8 @@ bg-snow text-textBlack font-NotoSans
         >
           <div class="flex justify-center items-center h-full">
             <div class="text-center">
-              <p class="mb-1 text-sm md:text-base">累計日数</p>
-              <span class="text-2xl md:text-3xl" id="totalDays">123</span>
+              <p class="mb-1 text-xs md:text-base">累計日数</p>
+              <span class="text-2xl md:text-3xl" id="totalDays"></span>
             </div>
           </div>
         </div>
@@ -165,7 +165,7 @@ bg-snow text-textBlack font-NotoSans
      <a href="#" class="hover:underline">ホーム</a>
     </li>
     <li>
-     <a href="#" class="hover:underline">レコード</a>
+     <a href="{% url 'activity:activity_list' %}" class="hover:underline">レコード</a>
     </li>
     <li>
      <a href="{% url 'activity:activity_add' %}" class="hover:underline">記録</a>
@@ -191,11 +191,11 @@ bg-snow text-textBlack font-NotoSans
 
 
 {% comment %} 以降は元々作ってくれたもの。 {% endcomment %}
-  <h1>ホーム画面です</h1>
+  {% comment %} <h1>ホーム画面です</h1>
   <a href="{% url 'users:logout' %}">ログアウト</a>
 
   <a href="{% url 'activity:activity_list' %}">レコード画面へ</a>
-  <a href="{% url 'activity:activity_add' %}">積み上げを記録する</a>
+  <a href="{% url 'activity:activity_add' %}">積み上げを記録する</a> {% endcomment %}
 
   <h1>日々の積み上げ記録</h1>
   <p>
