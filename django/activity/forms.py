@@ -1,11 +1,17 @@
 from django import forms
 from .models import ActivityRecord
+from categories.models import Category, ActivityCategory
 from django.core.exceptions import ValidationError
 from datetime import date
 
 # ActivityRecord登録・編集用フォーム
 class ActivityRecordForm(forms.ModelForm):
-
+    # カテゴリーの入力欄を追加(初期値は空白, 選択は必須ではない)
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.none(),
+        required=False,
+        label='カテゴリー'
+    )
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'value': date.today().strftime('%Y-%m-%d')}))
     duration = forms.IntegerField(widget=forms.TimeInput(attrs={'type': 'time', 'value': '00:00'}))
 
@@ -13,12 +19,30 @@ class ActivityRecordForm(forms.ModelForm):
         model = ActivityRecord
         fields = ['date', 'duration', 'memo']
 
-    # date, durationの初期値を設定
+    # 初期値の設定
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super(ActivityRecordForm, self).__init__(*args, **kwargs)
+        # 編集時の初期値を設定
         if self.instance.pk:
+            # 活動時間の初期値を設定
             self.initial['duration'] = f"{self.instance.duration // 60:02d}:{self.instance.duration % 60:02d}"
+            # 日付の初期値を設定
             self.initial['date'] = self.instance.date.strftime('%Y-%m-%d')
+
+            # 関連付けられているカテゴリーを取得
+            try:
+                activity_category = ActivityCategory.objects.get(activity_record=self.instance)
+                related_category = activity_category.category
+            except ActivityCategory.DoesNotExist:
+                related_category = None
+
+            # カテゴリーフィールドの初期値を設定
+            self.fields['category'].initial = related_category
+
+        # userが指定されている場合、カテゴリーをユーザーに紐付けられている論理削除されていないカテゴリー一覧を取得
+        if user:
+            self.fields['category'].queryset = Category.objects.filter(user=user, is_deleted=False)
 
     # durationを分単位に変換
     def clean(self):

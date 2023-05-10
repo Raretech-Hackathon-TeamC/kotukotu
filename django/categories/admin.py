@@ -5,4 +5,9 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'user', 'goal', 'color_code', 'created_at', 'updated_at', 'is_deleted')
 
 admin.site.register(Category, CategoryAdmin)
-admin.site.register(ActivityCategory)
+
+class ActivityCategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'category', 'activity_record')
+
+
+admin.site.register(ActivityCategory, ActivityCategoryAdmin)

@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.core import serializers
 from .models import ActivityRecord
 from .forms import ActivityRecordForm
+from categories.models import Category, ActivityCategory
 from datetime import timedelta, date
 
 # ホーム画面
@@ -70,13 +71,20 @@ class ActivityAddView(LoginRequiredMixin, generic.CreateView):
     # モデル・フォーム・テンプレート・リダイレクト先の設定
     model = ActivityRecord
     form_class = ActivityRecordForm
-    template_name = 'activity_add.html'
+    #! todo: 本番環境では [template_name = 'activity_add.html']へ変更
+    template_name = 'test_activity_add.html'
     success_url = reverse_lazy('activity:home')
 
     # フォームが有効な場合、リクエストユーザーを設定
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(ActivityAddView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
 
     # POSTリクエストの場合、ajax_submitメソッドを呼び出す
     def dispatch(self, request, *args, **kwargs):
@@ -85,14 +93,19 @@ class ActivityAddView(LoginRequiredMixin, generic.CreateView):
         # それ以外の場合、親クラスのdispatchメソッドを呼び出す
         return super(ActivityAddView, self).dispatch(request, *args, **kwargs)
 
-    # ajax_submitメソッド(非同期通信で、)
     def ajax_submit(self, request):
         # リクエストからフォームを作成
-        form = self.form_class(request.POST, instance=ActivityRecord(user=request.user))
+        form = self.form_class(request.POST, instance=ActivityRecord(user=request.user), user=request.user)
 
         # フォームが有効な場合、保存し成功メッセージを返す
         if form.is_valid():
-            form.save()
+            activity = form.save()
+            category = form.cleaned_data['category']
+
+            # カテゴリーが選択されている場合、ActivityCategoryオブジェクトを作成
+            if category:
+                ActivityCategory.objects.create(category=category, activity_record=activity)
+
             return JsonResponse({"success": True})
         # フォームが無効な場合、エラーメッセージを返す
         else:
